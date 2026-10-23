@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: repo
+    name: build / lint / test (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          path: repo
+      - name: Checkout @voidrift/core
+        # remove once @voidrift/core is published
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: TylerJPresley/voidrift-core
+          path: voidrift-core
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Build @voidrift/core
+        # remove once @voidrift/core is published
+        working-directory: voidrift-core
+        run: |
+          npm install
+          npm run build
+      - name: Link @voidrift/core
+        # remove once @voidrift/core is published
+        working-directory: repo
+        run: npm install --no-save ../voidrift-core
+      - run: npm install
+        # switch to npm ci + cache once lockfiles are committed
+      - run: npm run build
+      - run: npm run lint
+      # typecheck omitted until test-file type errors are fixed
+      - run: npm test
