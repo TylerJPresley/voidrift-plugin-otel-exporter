@@ -13,29 +13,26 @@ jobs:
       run:
         working-directory: repo
     name: build / lint / test (Node ${{ matrix.node }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        node: [22, 24]
+        node: [24]
     steps:
       - name: Checkout ${{ github.repository }}
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: repo
       - name: Checkout @voidrift/core
         # remove once @voidrift/core is published
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: TylerJPresley/voidrift-core
           path: voidrift-core
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ matrix.node }}
-      - name: Use npm 11
-        # Node 22 bundles npm 10, which crashes on install without a lockfile
-        run: npm install -g npm@11
       - name: Build @voidrift/core
         # remove once @voidrift/core is published
         working-directory: voidrift-core
@@ -50,5 +47,5 @@ jobs:
         # switch to npm ci + cache once lockfiles are committed
       - run: npm run build
       - run: npm run lint
-      # typecheck omitted until test-file type errors are fixed
+      - run: npm run typecheck
       - run: npm test
