@@ -34,6 +34,6 @@ Run from this folder. Scripts:
 
 ## Conventions
 - Configuration files are JSON; prose is Markdown. Filename slugs are lowercase alphanumerics and hyphens.
-- Every rigid limit (size, count, time, ratio) is an entry in the one `limits` registry (`core-blueprint.md` §13.11); there are no hidden limits.
+- A limit is added only when exceeding it would break functionality or testing shows a tunable problem; otherwise derive it from an existing budget or keep an internal constant. Every limit is an entry in the one `limits` registry (`core-blueprint.md` §13.11).
 
 Follow `CONTRIBUTING.md` for this project's standards.
